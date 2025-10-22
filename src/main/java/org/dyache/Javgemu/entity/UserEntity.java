@@ -1,20 +1,15 @@
 package org.dyache.Javgemu.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import java.util.List;
+import lombok.Data;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 public class UserEntity {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -23,12 +18,9 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String nickname;
 
-    @Column(nullable = false)
-    private String password;
-
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 500)
     private String bio;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<ReviewEntity> reviews;
+    @Column(nullable = false)
+    private String password;
 }
