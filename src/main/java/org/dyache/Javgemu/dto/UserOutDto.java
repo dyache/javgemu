@@ -19,7 +19,7 @@ public class UserOutDto {
         return new UserOutDto(
                 user.getId(),
                 user.getEmail(),
-                user.getNickname(),
+                user.getUsername(),
                 user.getBio()
         );
     }

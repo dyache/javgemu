@@ -1,6 +1,5 @@
 package org.dyache.Javgemu.service;
 
-
 import org.dyache.Javgemu.dto.UserOutDto;
 import org.dyache.Javgemu.entity.UserEntity;
 import org.dyache.Javgemu.exception.NotFoundException;
@@ -31,7 +30,7 @@ public class UserService {
     }
 
     public UserOutDto getUserProfile(String nickname) {
-        UserEntity user = userRepo.findByNickname(nickname)
+        UserEntity user = userRepo.findByUsername(nickname)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         return UserOutDto.fromEntity(user);
     }

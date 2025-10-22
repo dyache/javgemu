@@ -1,0 +1,11 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres_javgemu
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: javgemu
+    ports:
+      - "5432:5432"
