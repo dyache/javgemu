@@ -1,11 +1,14 @@
 package org.dyache.Javgemu.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.dyache.Javgemu.dto.*;
+import org.dyache.Javgemu.dto.ReviewCreateDto;
+import org.dyache.Javgemu.dto.ReviewOutDto;
+import org.dyache.Javgemu.dto.ReviewUpdateDto;
 import org.dyache.Javgemu.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -52,7 +55,7 @@ public class ReviewController {
 
 
     @GetMapping("/by-nickname/{nickname}")
-    public ResponseEntity<List<ReviewOutDto>> getReviewsByNickname(@PathVariable String nickname) {
-        return ResponseEntity.ok(reviewService.getReviewsByNickname(nickname));
+    public ResponseEntity<List<ReviewOutDto>> getReviewsByUsername(@PathVariable String nickname) {
+        return ResponseEntity.ok(reviewService.getReviewsByUsername(nickname));
     }
 }

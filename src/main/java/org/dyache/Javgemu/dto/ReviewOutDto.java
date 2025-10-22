@@ -23,7 +23,7 @@ public class ReviewOutDto {
         dto.setTitle(review.getTitle());
         dto.setContent(review.getContent());
         dto.setNickname(
-                review.getUser() != null ? review.getUser().getNickname() : "Аноним"
+                review.getUser() != null ? review.getUser().getUsername() : "Аноним"
         );
         dto.setLikesCount(review.getLikes() != null ? review.getLikes().size() : 0);
         dto.setDislikesCount(review.getDislikes() != null ? review.getDislikes().size() : 0);

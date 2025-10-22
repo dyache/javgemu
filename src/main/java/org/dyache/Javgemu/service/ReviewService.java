@@ -72,4 +72,15 @@ public class ReviewService {
 
         reviewRepository.delete(review);
     }
+
+    public List<ReviewOutDto> getReviewsByUsername(String nickname) {
+        if (!userRepository.existsByUsername(nickname)) {
+            throw new RuntimeException("User not found: " + nickname);
+        }
+
+        return reviewRepository.findByUser_Username(nickname)
+                .stream()
+                .map(ReviewOutDto::fromEntity)
+                .toList();
+    }
 }

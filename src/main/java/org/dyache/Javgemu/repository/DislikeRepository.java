@@ -14,6 +14,6 @@ public interface DislikeRepository extends JpaRepository<DislikeEntity, Long> {
 
     long countByReviewId(Long reviewId);
 
-    @Query("SELECT d.user.email FROM Dislike d WHERE d.review.id = :reviewId")
+    @Query("SELECT d.user.email FROM DislikeEntity d WHERE d.review.id = :reviewId")
     List<String> findUserEmailsByReviewId(Long reviewId);
 }

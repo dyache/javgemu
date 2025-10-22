@@ -38,7 +38,7 @@ public class CommentService {
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new NotFoundException("Review not found"));
 
-        String nickname = (user.getNickname() != null) ? user.getNickname() : "Аноним";
+        String nickname = (user.getUsername() != null) ? user.getUsername() : "Аноним";
 
         CommentEntity comment = CommentEntity.builder()
                 .review(review)
@@ -58,7 +58,7 @@ public class CommentService {
         UserEntity user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new ForbiddenException("Пользователь не найден"));
 
-        boolean isAuthor = comment.getAuthorNickname().equals(user.getNickname());
+        boolean isAuthor = comment.getAuthorNickname().equals(user.getUsername());
 
         if (!isAuthor) {
             throw new ForbiddenException("Недостаточно прав для удаления");
@@ -75,7 +75,7 @@ public class CommentService {
         UserEntity user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new ForbiddenException("Пользователь не найден"));
 
-        if (!comment.getAuthorNickname().equals(user.getNickname())) {
+        if (!comment.getAuthorNickname().equals(user.getUsername())) {
             throw new ForbiddenException("Вы не автор комментария");
         }
 

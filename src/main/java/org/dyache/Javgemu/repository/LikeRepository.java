@@ -14,6 +14,6 @@ public interface LikeRepository extends JpaRepository<LikeEntity, Long> {
 
     long countByReviewId(Long reviewId);
 
-    @Query("SELECT l.user.email FROM Like l WHERE l.review.id = :reviewId")
+    @Query("SELECT l.user.email FROM LikeEntity l WHERE l.review.id = :reviewId")
     List<String> findUserEmailsByReviewId(Long reviewId);
 }
