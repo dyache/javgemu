@@ -9,7 +9,6 @@ import org.dyache.Javgemu.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,20 +23,20 @@ public class ProfileService {
         this.reviewRepository = reviewRepository;
     }
 
-
     @Transactional(readOnly = true)
     public ProfileResponseDto getProfile(String email) {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
-        List<ReviewEntity> reviews = reviewRepository.findByUserNicknameOrderByIdDesc(user.getNickname());
+
+        List<ReviewEntity> reviews = reviewRepository.findByNicknameOrderByIdDesc(user.getNickname());
+
         List<ReviewOutDto> reviewDtos = reviews.stream()
                 .map(ReviewOutDto::fromEntity)
                 .collect(Collectors.toList());
 
         return new ProfileResponseDto(UserOutDto.fromEntity(user), reviewDtos);
     }
-
 
     @Transactional
     public void updateProfile(String email, ProfileUpdateDto data) {

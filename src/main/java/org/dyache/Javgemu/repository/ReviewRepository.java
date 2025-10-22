@@ -6,6 +6,5 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
     List<ReviewEntity> findAllByOrderByIdDesc();
-    List<ReviewEntity> findByUserNicknameOrderByCreatedAtDesc(String nickname);
-    List<ReviewEntity> findByUserNicknameOrderByIdDesc(String nickname);
+    List<ReviewEntity> findByNicknameOrderByIdDesc(String nickname);
 }
