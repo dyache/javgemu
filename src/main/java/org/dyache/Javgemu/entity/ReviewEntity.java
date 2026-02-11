@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "reviews")
@@ -20,6 +21,9 @@ public class ReviewEntity {
 
     @Column(nullable = false)
     private String title;
+
+    @Column(name="rating_stars", precision = 2, scale = 1)
+    private BigDecimal ratingStars;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;

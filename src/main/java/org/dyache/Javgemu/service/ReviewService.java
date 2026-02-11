@@ -11,6 +11,8 @@ import org.dyache.Javgemu.repository.ReviewRepository;
 import org.dyache.Javgemu.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +46,9 @@ public class ReviewService {
         review.setCreatedAt(LocalDateTime.now());
         review.setUser(user);
 
+        // NEW: rating (0..5, halves allowed)
+        review.setRatingStars(normalizeHalfStar(dto.getRatingStars()));
+
         reviewRepository.save(review);
         return ReviewOutDto.fromEntity(review);
     }
@@ -58,6 +63,12 @@ public class ReviewService {
 
         if (dto.getTitle() != null) review.setTitle(dto.getTitle());
         if (dto.getContent() != null) review.setContent(dto.getContent());
+
+        // NEW: update rating if provided
+        if (dto.getRatingStars() != null) {
+            review.setRatingStars(normalizeHalfStar(dto.getRatingStars()));
+        }
+
         reviewRepository.save(review);
         return ReviewOutDto.fromEntity(review);
     }
@@ -82,5 +93,20 @@ public class ReviewService {
                 .stream()
                 .map(ReviewOutDto::fromEntity)
                 .toList();
+    }
+
+    private BigDecimal normalizeHalfStar(BigDecimal v) {
+        if (v == null) return null;
+
+        BigDecimal min = BigDecimal.ZERO;
+        BigDecimal max = new BigDecimal("5.0");
+
+        if (v.compareTo(min) < 0) v = min;
+        if (v.compareTo(max) > 0) v = max;
+
+        // round to nearest 0.5
+        return v.multiply(BigDecimal.valueOf(2))
+                .setScale(0, RoundingMode.HALF_UP)
+                .divide(BigDecimal.valueOf(2), 1, RoundingMode.UNNECESSARY);
     }
 }

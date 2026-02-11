@@ -15,7 +15,7 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    // TODO: заменить "userEmail" на currentUser после добавления JWT
+
     private String mockCurrentUserEmail() {
         return "test@example.com";
     }

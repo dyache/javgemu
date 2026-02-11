@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dyache.Javgemu.entity.ReviewEntity;
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -16,12 +17,15 @@ public class ReviewOutDto {
     private long likesCount;
     private long dislikesCount;
     private long commentsCount;
+    private BigDecimal ratingStars;
+
 
     public static ReviewOutDto fromEntity(ReviewEntity review) {
         ReviewOutDto dto = new ReviewOutDto();
         dto.setId(review.getId());
         dto.setTitle(review.getTitle());
         dto.setContent(review.getContent());
+        dto.setRatingStars(review.getRatingStars());
         dto.setNickname(
                 review.getUser() != null ? review.getUser().getUsername() : "Аноним"
         );
