@@ -34,4 +34,10 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         return UserOutDto.fromEntity(user);
     }
+
+    public UserOutDto getUserByEmail(String email){
+        UserEntity user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        return UserOutDto.fromEntity(user);
+    }
 }

@@ -1,6 +1,8 @@
 package org.dyache.Javgemu.entity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

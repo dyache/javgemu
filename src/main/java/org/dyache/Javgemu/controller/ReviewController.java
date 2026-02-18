@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.dyache.Javgemu.dto.ReviewCreateDto;
 import org.dyache.Javgemu.dto.ReviewOutDto;
 import org.dyache.Javgemu.dto.ReviewUpdateDto;
+import org.dyache.Javgemu.entity.UserEntity;
 import org.dyache.Javgemu.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reviews")
+@RequestMapping("/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
 
@@ -20,7 +21,9 @@ public class ReviewController {
 
 
     @GetMapping
-    public ResponseEntity<List<ReviewOutDto>> getAllReviews() {
+    public ResponseEntity<List<ReviewOutDto>> getAllReviews(
+            @AuthenticationPrincipal UserEntity currentUser
+    ) {
         return ResponseEntity.ok(reviewService.getAllReviews());
     }
 
@@ -33,8 +36,9 @@ public class ReviewController {
 
     @PostMapping
     public ResponseEntity<ReviewOutDto> createReview(@RequestBody ReviewCreateDto dto,
-                                                     @AuthenticationPrincipal(expression = "email") String email) {
-        return ResponseEntity.ok(reviewService.createReview(dto, email));
+                                                     @AuthenticationPrincipal UserEntity currentUser) {
+        System.out.println("maybe creating");
+        return ResponseEntity.ok(reviewService.createReview(dto, currentUser.getEmail()));
     }
 
 

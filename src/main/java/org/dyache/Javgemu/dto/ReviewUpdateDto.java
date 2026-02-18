@@ -7,5 +7,5 @@ import java.math.BigDecimal;
 public class ReviewUpdateDto {
     private String title;
     private String content;
-    private BigDecimal ratingStars; // <-- NEW
+    private BigDecimal ratingStars;
 }

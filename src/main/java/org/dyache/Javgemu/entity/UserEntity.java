@@ -1,5 +1,6 @@
 package org.dyache.Javgemu.entity;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,7 @@ public class UserEntity implements UserDetails {
     private String email;
 
     @Column(nullable = false, unique = true)
+    @JsonAlias("nickname")
     private String username;
 
     @Column(length = 500)

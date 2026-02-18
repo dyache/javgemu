@@ -1,5 +1,7 @@
 package org.dyache.Javgemu.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.dyache.Javgemu.dto.UserOutDto;
 import org.dyache.Javgemu.service.UserService ;
 import org.dyache.Javgemu.entity.UserEntity;
@@ -20,6 +22,7 @@ public class UserController {
     }
 
 
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping
     public ResponseEntity<List<UserOutDto>> getAllUsers() {
         List<UserOutDto> users = userService.getAllUsers();

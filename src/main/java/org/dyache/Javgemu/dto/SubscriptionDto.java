@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse {
-    private String access_token;
+public class SubscriptionDto {
+    private Long id;
+    private Long followerId;
+    private Long userId;
 }
