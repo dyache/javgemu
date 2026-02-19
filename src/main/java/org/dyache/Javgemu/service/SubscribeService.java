@@ -9,6 +9,8 @@ import org.dyache.Javgemu.repository.SubscribeRepository;
 import org.dyache.Javgemu.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class SubscribeService {
@@ -25,5 +27,11 @@ public class SubscribeService {
         sub.setSubscriber(subscriber);
         sub.setUserId(user);
         subscribeRepository.save(sub);
+
     }
+
+    public List<Long> getSubscribedUserIds(Long subscriberId) {
+        return subscribeRepository.findTargetUserIdsBySubscriberId(subscriberId);
+    }
+
 }

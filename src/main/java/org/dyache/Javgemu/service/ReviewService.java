@@ -23,6 +23,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
+    private final SubscribeService subscribeService;
 
     public List<ReviewOutDto> getAllReviews() {
         return reviewRepository.findAll().stream()
@@ -108,5 +109,17 @@ public class ReviewService {
         return v.multiply(BigDecimal.valueOf(2))
                 .setScale(0, RoundingMode.HALF_UP)
                 .divide(BigDecimal.valueOf(2), 1, RoundingMode.UNNECESSARY);
+    }
+
+
+    public List<ReviewEntity> getReviewsFromSubscribedUsers(Long subscriberId) {
+        List<Long> subscribedUserIds =
+                subscribeService.getSubscribedUserIds(subscriberId);
+
+        if (subscribedUserIds.isEmpty()) {
+            return List.of();
+        }
+
+        return reviewRepository.findReviewsByUserIds(subscribedUserIds);
     }
 }

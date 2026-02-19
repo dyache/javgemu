@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.dyache.Javgemu.dto.ReviewCreateDto;
 import org.dyache.Javgemu.dto.ReviewOutDto;
 import org.dyache.Javgemu.dto.ReviewUpdateDto;
+import org.dyache.Javgemu.entity.ReviewEntity;
 import org.dyache.Javgemu.entity.UserEntity;
 import org.dyache.Javgemu.service.ReviewService;
+import org.dyache.Javgemu.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,8 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final UserService userService;
+
 
 
     @GetMapping
@@ -61,5 +65,14 @@ public class ReviewController {
     @GetMapping("/by-nickname/{nickname}")
     public ResponseEntity<List<ReviewOutDto>> getReviewsByUsername(@PathVariable String nickname) {
         return ResponseEntity.ok(reviewService.getReviewsByUsername(nickname));
+    }
+
+
+    @GetMapping("/subscriptions")
+    public List<ReviewEntity> getReviewsFromSubscriptions(
+            @AuthenticationPrincipal(expression = "email") String email
+    ) {
+        Long userId = userService.getUserByEmail(email).getId();
+        return reviewService.getReviewsFromSubscribedUsers(userId);
     }
 }
