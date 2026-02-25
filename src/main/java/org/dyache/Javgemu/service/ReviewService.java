@@ -8,8 +8,10 @@ import org.dyache.Javgemu.entity.ReviewEntity;
 import org.dyache.Javgemu.entity.UserEntity;
 import org.dyache.Javgemu.exception.NotFoundException;
 import org.dyache.Javgemu.repository.ReviewRepository;
+import org.dyache.Javgemu.repository.SubscribeRepository;
 import org.dyache.Javgemu.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -24,22 +26,19 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final SubscribeService subscribeService;
+    private final SubscribeRepository subscribeRepository;
 
     public List<ReviewOutDto> getAllReviews() {
-        return reviewRepository.findAll().stream()
-                .map(ReviewOutDto::fromEntity)
-                .collect(Collectors.toList());
+        return reviewRepository.findAll().stream().map(ReviewOutDto::fromEntity).collect(Collectors.toList());
     }
 
     public ReviewOutDto getReviewById(Long id) {
-        ReviewEntity review = reviewRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Обзор не найден"));
+        ReviewEntity review = reviewRepository.findById(id).orElseThrow(() -> new NotFoundException("Обзор не найден"));
         return ReviewOutDto.fromEntity(review);
     }
 
     public ReviewOutDto createReview(ReviewCreateDto dto, String userEmail) {
-        UserEntity user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        UserEntity user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
         ReviewEntity review = new ReviewEntity();
         review.setTitle(dto.getTitle());
@@ -55,8 +54,7 @@ public class ReviewService {
     }
 
     public ReviewOutDto updateReview(Long id, ReviewUpdateDto dto, String userEmail) {
-        ReviewEntity review = reviewRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Обзор не найден"));
+        ReviewEntity review = reviewRepository.findById(id).orElseThrow(() -> new NotFoundException("Обзор не найден"));
 
         if (!review.getUser().getEmail().equals(userEmail)) {
             throw new NotFoundException("Вы не автор этого обзора");
@@ -75,8 +73,7 @@ public class ReviewService {
     }
 
     public void deleteReview(Long id, String userEmail) {
-        ReviewEntity review = reviewRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Обзор не найден"));
+        ReviewEntity review = reviewRepository.findById(id).orElseThrow(() -> new NotFoundException("Обзор не найден"));
 
         if (!review.getUser().getEmail().equals(userEmail)) {
             throw new NotFoundException("Вы не автор этого обзора");
@@ -90,10 +87,7 @@ public class ReviewService {
             throw new RuntimeException("User not found: " + nickname);
         }
 
-        return reviewRepository.findByUser_Username(nickname)
-                .stream()
-                .map(ReviewOutDto::fromEntity)
-                .toList();
+        return reviewRepository.findByUser_Username(nickname).stream().map(ReviewOutDto::fromEntity).toList();
     }
 
     private BigDecimal normalizeHalfStar(BigDecimal v) {
@@ -106,20 +100,24 @@ public class ReviewService {
         if (v.compareTo(max) > 0) v = max;
 
         // round to nearest 0.5
-        return v.multiply(BigDecimal.valueOf(2))
-                .setScale(0, RoundingMode.HALF_UP)
-                .divide(BigDecimal.valueOf(2), 1, RoundingMode.UNNECESSARY);
+        return v.multiply(BigDecimal.valueOf(2)).setScale(0, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(2), 1, RoundingMode.UNNECESSARY);
     }
 
 
-    public List<ReviewEntity> getReviewsFromSubscribedUsers(Long subscriberId) {
-        List<Long> subscribedUserIds =
-                subscribeService.getSubscribedUserIds(subscriberId);
+    @Transactional(readOnly = true)
+    public List<ReviewOutDto> getReviewsFromSubscribedUsers(Long subscriberId) {
 
-        if (subscribedUserIds.isEmpty()) {
+        // 1. Находим всех пользователей, на кого подписан текущий
+        List<Long> targetUserIds = subscribeRepository.findBySubscriber_Id(subscriberId).stream().map(sub -> sub.getTarget().getId()).toList();
+
+        if (targetUserIds.isEmpty()) {
             return List.of();
         }
 
-        return reviewRepository.findReviewsByUserIds(subscribedUserIds);
+        // 2. Берём их обзоры
+        List<ReviewEntity> reviews = reviewRepository.findByUser_IdInOrderByCreatedAtDesc(targetUserIds);
+
+        // 3. Entity → DTO
+        return reviews.stream().map(ReviewOutDto::fromEntity).toList();
     }
 }

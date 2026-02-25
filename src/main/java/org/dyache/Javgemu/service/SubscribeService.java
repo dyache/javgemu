@@ -1,5 +1,6 @@
 package org.dyache.Javgemu.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.dyache.Javgemu.dto.UserOutDto;
 import org.dyache.Javgemu.entity.SubscribeEntity;
@@ -14,24 +15,35 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SubscribeService {
+
     private final SubscribeRepository subscribeRepository;
     private final UserRepository userRepository;
-    public void subscribe(Long userId, Long subscriberId){
+
+    @Transactional
+    public void subscribe(Long targetUserId, Long subscriberId) {
+
+        if (targetUserId.equals(subscriberId)) {
+            throw new IllegalStateException("Нельзя подписаться на себя");
+        }
+
+        boolean exists = subscribeRepository
+                .existsBySubscriber_IdAndTarget_Id(subscriberId, targetUserId);
+
+        if (exists) {
+            return; // уже подписан — молча выходим
+        }
 
         UserEntity subscriber = userRepository.findById(subscriberId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+                .orElseThrow();
 
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-        SubscribeEntity sub = new SubscribeEntity();
-        sub.setSubscriber(subscriber);
-        sub.setUserId(user);
-        subscribeRepository.save(sub);
+        UserEntity target = userRepository.findById(targetUserId)
+                .orElseThrow();
 
+        SubscribeEntity subscribe = SubscribeEntity.builder()
+                .subscriber(subscriber)
+                .target(target)
+                .build();
+
+        subscribeRepository.save(subscribe);
     }
-
-    public List<Long> getSubscribedUserIds(Long subscriberId) {
-        return subscribeRepository.findTargetUserIdsBySubscriberId(subscriberId);
-    }
-
 }

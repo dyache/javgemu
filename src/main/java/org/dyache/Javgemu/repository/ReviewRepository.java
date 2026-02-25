@@ -21,4 +21,6 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
         ORDER BY r.createdAt DESC
     """)
     List<ReviewEntity> findReviewsByUserIds(@Param("userIds") List<Long> userIds);
+
+    List<ReviewEntity> findByUser_IdInOrderByCreatedAtDesc(List<Long> targetIds);
 }

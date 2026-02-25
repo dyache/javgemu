@@ -18,10 +18,10 @@ public class SubscribeEntity {
     private Long id;
 
     @ManyToOne()
-    @JoinColumn(name = "subscriber_id", nullable = false)
-    private UserEntity userId;
+    @JoinColumn(name = "target_id", nullable = false)
+    private UserEntity target;
 
     @ManyToOne()
-    @JoinColumn(name = "target_id", nullable = false)
+    @JoinColumn(name = "subscriber_id", nullable = false)
     private UserEntity subscriber;
 }

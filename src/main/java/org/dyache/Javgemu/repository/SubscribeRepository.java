@@ -10,11 +10,9 @@ import java.util.List;
 
 @Repository
 public interface SubscribeRepository extends JpaRepository<SubscribeEntity, Long> {
-    @Query("""
-                SELECT s.target.id
-                FROM SubscribeEntity s
-                WHERE s.subscriber.id = :subscriberId
-            """)
-    List<Long> findTargetUserIdsBySubscriberId(@Param("subscriberId") Long subscriberId);
+
+    List<SubscribeEntity> findBySubscriber_Id(Long subscriberId);
+
+    boolean existsBySubscriber_IdAndTarget_Id(Long subscriberId, Long targetId);
 
 }

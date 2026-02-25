@@ -68,11 +68,4 @@ public class ReviewController {
     }
 
 
-    @GetMapping("/subscriptions")
-    public List<ReviewEntity> getReviewsFromSubscriptions(
-            @AuthenticationPrincipal(expression = "email") String email
-    ) {
-        Long userId = userService.getUserByEmail(email).getId();
-        return reviewService.getReviewsFromSubscribedUsers(userId);
-    }
 }
